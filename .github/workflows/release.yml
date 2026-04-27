@@ -1,0 +1,23 @@
+name: Release
+
+# Go modules are tag-based: there is no registry to publish to. Tagging the
+# repository with `vX.Y.Z` is the publish step. This workflow exists only to
+# acknowledge the release event for parity with the other Scanii SDKs and to
+# leave a green check on each release tag.
+#
+# Triggered by Rafael creating the GitHub Release in the UI (or via
+# `gh release create`). The workflow does NOT create the release itself.
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  acknowledge:
+    name: Acknowledge release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print release info
+        run: |
+          echo "Released ${{ github.event.release.tag_name }} of github.com/scanii/scanii-go"
+          echo "Go modules consume this directly from the git tag — no registry push needed."
