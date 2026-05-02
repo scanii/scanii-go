@@ -188,6 +188,62 @@ func TestProcessWithFindings(t *testing.T) {
 	}
 }
 
+// TestRetrieveTraceKnownID verifies that a scan id has a non-empty events
+// list in its processing trace (v2.2 preview surface).
+func TestRetrieveTraceKnownID(t *testing.T) {
+	c := newTestClient(t)
+	path := writeTempFile(t, localMalwareUUID)
+
+	result, err := c.Process(context.Background(), path, nil, "")
+	if err != nil {
+		t.Fatalf("Process: %v", err)
+	}
+
+	trace, err := c.RetrieveTrace(context.Background(), result.ID)
+	if err != nil {
+		t.Fatalf("RetrieveTrace: %v", err)
+	}
+	if trace == nil {
+		t.Fatal("RetrieveTrace returned nil for a known processing id")
+	}
+	if len(trace.Events) == 0 {
+		t.Fatal("expected non-empty Events slice in trace")
+	}
+}
+
+// TestRetrieveTraceUnknownID verifies that RetrieveTrace returns (nil, nil) on
+// 404 (v2.2 preview surface).
+func TestRetrieveTraceUnknownID(t *testing.T) {
+	c := newTestClient(t)
+
+	trace, err := c.RetrieveTrace(context.Background(), "does-not-exist-trace-go")
+	if err != nil {
+		t.Fatalf("expected nil error on 404, got: %v", err)
+	}
+	if trace != nil {
+		t.Fatalf("expected nil TraceResult for unknown id, got: %+v", trace)
+	}
+}
+
+// TestProcessFromUrl verifies that a URL submission returns a non-nil result
+// and hard-asserts the EICAR finding served by scanii-cli (v2.2 preview surface).
+func TestProcessFromUrl(t *testing.T) {
+	c := newTestClient(t)
+	url := scaniiCLITarget + "/static/eicar.txt"
+
+	result, err := c.ProcessFromUrl(context.Background(), url, nil, "")
+	if err != nil {
+		t.Fatalf("ProcessFromUrl: %v", err)
+	}
+	if result == nil {
+		t.Fatal("ProcessFromUrl returned nil result")
+	}
+	const eicarFinding = "content.malicious.eicar-test-signature"
+	if !contains(result.Findings, eicarFinding) {
+		t.Fatalf("expected finding %q; got %v", eicarFinding, result.Findings)
+	}
+}
+
 func TestFetch(t *testing.T) {
 	c := newTestClient(t)
 	pending, err := c.Fetch(context.Background(), "https://example.com/test.txt", nil, "")

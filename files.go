@@ -110,6 +110,61 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*ProcessingResult, er
 	return &result, nil
 }
 
+// ProcessFromUrl submits a remote URL for synchronous scanning.
+//
+// location must be a string URL. The URL is sent as a multipart/form-data
+// field to POST /files; the Scanii server fetches and scans it synchronously.
+// This is distinct from Fetch, which submits to POST /files/fetch for
+// asynchronous server-side fetching.
+//
+// This is a v2.2 preview surface; the API shape may shift before it is marked
+// stable. See https://scanii.github.io/openapi/v22/ — POST /files.
+func (c *Client) ProcessFromUrl(ctx context.Context, location string, metadata map[string]string, callback string) (*ProcessingResult, error) {
+	body, contentType, err := buildUrlMultipart(location, metadata, callback)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := c.newRequest(ctx, http.MethodPost, c.target.resolve("/files"), body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set(headerContentType, contentType)
+
+	var result ProcessingResult
+	if _, err := c.do(req, &result, http.StatusCreated); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// buildUrlMultipart encodes location (and optional metadata/callback) as a
+// multipart/form-data body for ProcessFromUrl. The cli rejects urlencoded
+// bodies on POST /files with MethodNotAllowed; multipart is required.
+func buildUrlMultipart(location string, metadata map[string]string, callback string) (io.Reader, string, error) {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	if err := writer.WriteField("location", location); err != nil {
+		return nil, "", err
+	}
+	if callback != "" {
+		if err := writer.WriteField("callback", callback); err != nil {
+			return nil, "", err
+		}
+	}
+	for k, v := range metadata {
+		if err := writer.WriteField(fmt.Sprintf("metadata[%s]", k), v); err != nil {
+			return nil, "", err
+		}
+	}
+
+	if err := writer.Close(); err != nil {
+		return nil, "", err
+	}
+	return body, writer.FormDataContentType(), nil
+}
+
 func buildFileMultipart(path string, metadata map[string]string, callback string) (io.Reader, string, error) {
 	file, err := os.Open(path)
 	if err != nil {
