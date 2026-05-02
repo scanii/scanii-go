@@ -1,5 +1,28 @@
 # Changelog
 
+## [v2.1.0] — v2.2 surface
+
+### New API
+
+- `Client.RetrieveTrace(ctx, id)` → `(*TraceResult, error)` — retrieves the
+  ordered processing event trace for a scan via `GET /files/{id}/trace`. Returns
+  `(nil, nil)` on 404 (no trace for that id). v2.2 preview surface; API shape may
+  shift before marked stable.
+- `Client.ProcessFromUrl(ctx, location, metadata, callback)` →
+  `(*ProcessingResult, error)` — submits a URL for synchronous scanning via
+  `POST /files` with `location` as a multipart/form-data field. Distinct from
+  `Fetch`, which submits to `/files/fetch` for asynchronous server-side fetching.
+  `location` must be a string URL. v2.2 preview surface.
+- `TraceResult` struct (`ID string`, `Events []TraceEvent`).
+- `TraceEvent` struct (`Timestamp time.Time`, `Message string`).
+
+### Deprecations
+
+- `ProcessingResult.Error` — deprecated via godoc. The server never populates
+  this field on successful responses; errors arrive as non-2xx HTTP responses
+  returned as `*scanii.Error` by every client method. The field is retained for
+  backwards compatibility. Will be removed in a future major version.
+
 ## v2.0.0
 
 Rebrand and modernization release.

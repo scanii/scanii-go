@@ -50,6 +50,24 @@ func main() {
 
 Every client method takes a `context.Context` as its first argument so that callers can cancel in-flight requests or attach deadlines.
 
+## API
+
+| Method | REST | Returns |
+|---|---|---|
+| `Process(ctx, path, metadata, callback)` | `POST /files` | `*ProcessingResult` |
+| `ProcessAsync(ctx, path, metadata, callback)` | `POST /files/async` | `*PendingResult` |
+| `ProcessFromUrl(ctx, location, metadata, callback)` | `POST /files` | `*ProcessingResult` (v2.2 preview) |
+| `Fetch(ctx, location, metadata, callback)` | `POST /files/fetch` | `*PendingResult` |
+| `Retrieve(ctx, id)` | `GET /files/{id}` | `*ProcessingResult` |
+| `RetrieveTrace(ctx, id)` | `GET /files/{id}/trace` | `*TraceResult` or `nil` (v2.2 preview) |
+| `Ping(ctx)` | `GET /ping` | `bool` |
+| `CreateAuthToken(ctx, timeout)` | `POST /auth/tokens` | `*AuthToken` |
+| `RetrieveAuthToken(ctx, id)` | `GET /auth/tokens/{id}` | `*AuthToken` |
+| `DeleteAuthToken(ctx, id)` | `DELETE /auth/tokens/{id}` | `error` |
+| `RetrieveAccountInfo(ctx)` | `GET /account` | `*AccountInfo` |
+
+Full API reference: <https://scanii.github.io/openapi/v22/>.
+
 ## Regional endpoints
 
 | Constant | Endpoint |

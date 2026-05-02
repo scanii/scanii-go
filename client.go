@@ -15,10 +15,34 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"runtime/debug"
 )
 
+const importPath = "github.com/scanii/scanii-go"
+
 // Version is the SDK version, used in the User-Agent header.
-const Version = "2.0.0"
+//
+// Resolved at package init from runtime/debug build info — returns
+// "(devel)" for local builds or tests without a tagged version.
+var Version = resolveVersion()
+
+func resolveVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "(devel)"
+	}
+	// SDK being tested/built directly (go test against this repo).
+	if info.Main.Path == importPath && info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+	// SDK being consumed as a dependency.
+	for _, dep := range info.Deps {
+		if dep.Path == importPath {
+			return dep.Version
+		}
+	}
+	return "(devel)"
+}
 
 const (
 	headerUserAgent     = "User-Agent"

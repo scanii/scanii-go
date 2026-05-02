@@ -14,7 +14,27 @@ type ProcessingResult struct {
 	CreationDate  time.Time         `json:"creation_date"`
 	ContentType   string            `json:"content_type"`
 	Metadata      map[string]string `json:"metadata"`
-	Error         string            `json:"error,omitempty"`
+
+	// Deprecated: The server never populates this field on successful responses.
+	// Errors arrive as non-2xx HTTP responses returned as *scanii.Error by every
+	// client method. Will be removed in a future major version.
+	Error string `json:"error,omitempty"`
+}
+
+// TraceResult holds the ordered processing events for a scan, returned by
+// RetrieveTrace.
+//
+// This is a v2.2 preview surface; the API shape may shift before it is marked
+// stable. See https://scanii.github.io/openapi/v22/ — GET /files/{id}/trace.
+type TraceResult struct {
+	ID     string       `json:"id"`
+	Events []TraceEvent `json:"events"`
+}
+
+// TraceEvent is a single processing event within a TraceResult.
+type TraceEvent struct {
+	Timestamp time.Time `json:"timestamp"`
+	Message   string    `json:"message"`
 }
 
 // PendingResult is returned by ProcessAsync and Fetch — it carries only the
