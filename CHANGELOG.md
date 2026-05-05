@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.0] — deprecate AUTO endpoint
+
+### Deprecated
+
+- `TargetAuto` — latency-based routing does not guarantee regional data placement. Use
+  `TargetUS1`, `TargetEU1`, `TargetEU2`, `TargetAP1`, `TargetAP2`, or `TargetCA1` for
+  explicit data residency control. Will be removed in a future major version.
+
 ## [v2.1.0] — v2.2 surface
 
 ### New API

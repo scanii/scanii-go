@@ -31,7 +31,7 @@ import (
 
 func main() {
     client, err := scanii.NewClient(scanii.ClientOpts{
-        Target: scanii.TargetAuto,
+        Target: scanii.TargetUS1,
         Key:    "your-api-key",
         Secret: "your-api-secret",
     })
@@ -72,13 +72,13 @@ Full API reference: <https://scanii.github.io/openapi/v22/>.
 
 | Constant | Endpoint |
 |---|---|
-| `scanii.TargetAuto` | `https://api.scanii.com` |
 | `scanii.TargetUS1` | `https://api-us1.scanii.com` |
 | `scanii.TargetEU1` | `https://api-eu1.scanii.com` |
 | `scanii.TargetEU2` | `https://api-eu2.scanii.com` |
 | `scanii.TargetAP1` | `https://api-ap1.scanii.com` |
 | `scanii.TargetAP2` | `https://api-ap2.scanii.com` |
 | `scanii.TargetCA1` | `https://api-ca1.scanii.com` |
+| ~~`scanii.TargetAuto`~~ | ~~`https://api.scanii.com`~~ — **deprecated**, does not guarantee regional data placement |
 
 For a custom or local endpoint, use `scanii.NewTarget("http://localhost:4000")`.
 
@@ -108,7 +108,7 @@ Three changes are required:
 
    ```diff
    - c := client.NewClient(&client.Opts{Target: endpoints.LATEST, Key: k, Secret: s})
-   + c, err := scanii.NewClient(scanii.ClientOpts{Target: scanii.TargetAuto, Key: k, Secret: s})
+   + c, err := scanii.NewClient(scanii.ClientOpts{Target: scanii.TargetUS1, Key: k, Secret: s})
    ```
 
 3. **Every method now takes `context.Context` as its first argument:**
