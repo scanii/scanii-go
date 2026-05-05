@@ -22,6 +22,10 @@ func (t Target) Endpoint() string {
 
 // Predefined regional Targets.
 var (
+	// Deprecated: TargetAuto routes to the nearest region via latency-based
+	// routing and does not guarantee which region processes your data. Use an
+	// explicit regional Target (TargetUS1, TargetEU1, etc.) for data residency
+	// compliance. Will be removed in a future major version.
 	TargetAuto = Target{endpoint: "https://api.scanii.com"}
 	TargetUS1  = Target{endpoint: "https://api-us1.scanii.com"}
 	TargetEU1  = Target{endpoint: "https://api-eu1.scanii.com"}
