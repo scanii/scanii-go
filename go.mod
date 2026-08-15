@@ -1,3 +1,3 @@
 module github.com/scanii/scanii-go
 
-go 1.26
+go 1.25
