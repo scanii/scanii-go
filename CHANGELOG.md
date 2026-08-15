@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.2.1] — dependency refresh
+
+- Bumped CI actions: `actions/checkout` v4 → v7, `actions/setup-go` v5 → v7.
+- Relaxed `go.mod` directive to `go 1.25` so the previous-stable CI leg builds. No runtime dependencies — the module itself is unchanged.
+
 ## [v2.2.0] — deprecate AUTO endpoint
 
 ### Deprecated
