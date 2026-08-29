@@ -18,7 +18,7 @@ import (
 	"runtime/debug"
 )
 
-const importPath = "github.com/scanii/scanii-go"
+const importPath = "github.com/scanii/scanii-go/v2"
 
 // Version is the SDK version, used in the User-Agent header.
 //

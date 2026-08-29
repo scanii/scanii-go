@@ -11,7 +11,7 @@ Official Go SDK for the [Scanii](https://www.scanii.com) content processing API.
 ## Install
 
 ```bash
-go get github.com/scanii/scanii-go@v2
+go get github.com/scanii/scanii-go/v2
 ```
 
 Requires Go 1.25 or newer.
@@ -26,7 +26,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scanii/scanii-go"
+    "github.com/scanii/scanii-go/v2"
 )
 
 func main() {
@@ -101,7 +101,7 @@ Three changes are required:
 
    ```diff
    - import "github.com/uvasoftware/scanii-go/pkg/client"
-   + import "github.com/scanii/scanii-go"
+   + import "github.com/scanii/scanii-go/v2"
    ```
 
 2. **Constructor and method names live under `scanii`** (the package was flattened from `pkg/client`):

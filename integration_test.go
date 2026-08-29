@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/scanii/scanii-go"
+	"github.com/scanii/scanii-go/v2"
 )
 
 // scanii-cli local test endpoint and credentials. The CI workflow boots
