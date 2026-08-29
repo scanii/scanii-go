@@ -306,7 +306,9 @@ func TestCreateRetrieveDeleteAuthToken(t *testing.T) {
 	c := newTestClient(t)
 	ctx := context.Background()
 
-	tok, err := c.CreateAuthToken(ctx, 30*time.Second)
+	const tokenTimeout = 30 * time.Second
+
+	tok, err := c.CreateAuthToken(ctx, tokenTimeout)
 	if err != nil {
 		t.Fatalf("CreateAuthToken: %v", err)
 	}
@@ -318,6 +320,13 @@ func TestCreateRetrieveDeleteAuthToken(t *testing.T) {
 	}
 	if tok.ExpirationDate.IsZero() {
 		t.Fatal("expected non-zero ExpirationDate")
+	}
+	// The requested lifetime must actually reach the API. Asserting only that
+	// ExpirationDate is non-zero would still pass if the timeout were dropped
+	// on the wire, since the server falls back to its own default (300s).
+	// See https://github.com/scanii/scanii-go/issues/14.
+	if lifetime := tok.ExpirationDate.Sub(tok.CreationDate); lifetime != tokenTimeout {
+		t.Fatalf("token lifetime: got %v, want %v (requested timeout did not reach the API)", lifetime, tokenTimeout)
 	}
 
 	tok2, err := c.RetrieveAuthToken(ctx, tok.ID)
