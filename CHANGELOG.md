@@ -1,5 +1,21 @@
 # Changelog
 
+## [v2.2.2] — fix module path for v2
+
+### Fixed
+
+- **`go.mod` now declares `github.com/scanii/scanii-go/v2`.** Go's semantic
+  import versioning requires the `/vN` suffix in the module path for every
+  major version at or above v2. Without it, all v2.x tags were uninstallable:
+  `go get github.com/scanii/scanii-go@v2.2.1` failed with `module path must
+  match major version`, and `@latest` fell back to the broken v1.1.0 tag.
+  Consumers must now import `github.com/scanii/scanii-go/v2`; the package name
+  is unchanged, so `scanii.NewClient(...)` and every other call site stays the
+  same.
+- The internal `importPath` constant used to resolve the SDK version from build
+  info was updated to match. Left stale, it would have reported `(devel)` in the
+  `User-Agent` header for every consumer.
+
 ## [v2.2.1] — dependency refresh
 
 - Bumped CI actions: `actions/checkout` v4 → v7, `actions/setup-go` v5 → v7.
@@ -43,8 +59,12 @@ Rebrand and modernization release.
 ### Breaking
 
 - **Module path renamed.** `github.com/uvasoftware/scanii-go` →
-  `github.com/scanii/scanii-go`. Major version bump uses the module-path-change
-  convention, so the import does **not** include a `/v2` suffix.
+  `github.com/scanii/scanii-go`. This entry originally claimed the
+  module-path-change convention meant the import did **not** need a `/v2`
+  suffix. That was wrong — changing the module path lets a module restart at
+  v1 under the new path, but it does not exempt v2+ tags from the suffix
+  requirement. The result was that v2.0.0 through v2.2.1 were uninstallable.
+  Corrected in v2.2.2; the import path is `github.com/scanii/scanii-go/v2`.
 - **Package flattened.** Callers now write `scanii.NewClient(...)` instead of
   `client.NewClient(...)`. The old `pkg/client`, `pkg/endpoints`, and
   `pkg/models` subpackages are gone — every type lives in the root `scanii`
