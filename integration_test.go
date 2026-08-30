@@ -272,6 +272,61 @@ func TestRetrieveTraceUnknownID(t *testing.T) {
 	}
 }
 
+func TestDeleteResultLeavesTraceAndDeleteTraceRemovesIt(t *testing.T) {
+	c := newTestClient(t)
+	ctx := context.Background()
+	path := writeTempFile(t, localMalwareUUID)
+
+	result, err := c.Process(ctx, path, nil, "")
+	if err != nil {
+		t.Fatalf("Process: %v", err)
+	}
+	if err := c.Delete(ctx, result.ID); err != nil {
+		t.Fatalf("Delete: %v", err)
+	}
+
+	trace, err := c.RetrieveTrace(ctx, result.ID)
+	if err != nil {
+		t.Fatalf("RetrieveTrace after Delete: %v", err)
+	}
+	if trace == nil || len(trace.Events) == 0 {
+		t.Fatal("expected trace to remain after deleting the processing result")
+	}
+
+	if err := c.DeleteTrace(ctx, result.ID); err != nil {
+		t.Fatalf("DeleteTrace: %v", err)
+	}
+	trace, err = c.RetrieveTrace(ctx, result.ID)
+	if err != nil {
+		t.Fatalf("RetrieveTrace after DeleteTrace: %v", err)
+	}
+	if trace != nil {
+		t.Fatalf("expected no trace after DeleteTrace, got %+v", trace)
+	}
+}
+
+func TestDeleteUnknownID(t *testing.T) {
+	err := newTestClient(t).Delete(context.Background(), "does-not-exist-delete-go")
+	if err == nil {
+		t.Fatal("expected error deleting unknown id")
+	}
+	apiErr, ok := err.(*scanii.Error)
+	if !ok || apiErr.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected *scanii.Error with status 404, got %T: %v", err, err)
+	}
+}
+
+func TestDeleteTraceUnknownID(t *testing.T) {
+	err := newTestClient(t).DeleteTrace(context.Background(), "does-not-exist-trace-delete-go")
+	if err == nil {
+		t.Fatal("expected error deleting unknown trace id")
+	}
+	apiErr, ok := err.(*scanii.Error)
+	if !ok || apiErr.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected *scanii.Error with status 404, got %T: %v", err, err)
+	}
+}
+
 // TestProcessFromUrl verifies that a URL submission returns a non-nil result
 // and hard-asserts the EICAR finding served by scanii-cli (v2.2 preview surface).
 func TestProcessFromUrl(t *testing.T) {

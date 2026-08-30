@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `Client.Delete(ctx, id)` deletes a processing result while leaving its trace intact.
+- `Client.DeleteTrace(ctx, id)` deletes a processing trace independently.
+- Both delete methods return `*scanii.Error` with status 404 for unknown IDs.
+
 ## [v2.2.2] — fix module path for v2
 
 ### Fixed

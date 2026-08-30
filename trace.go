@@ -27,3 +27,15 @@ func (c *Client) RetrieveTrace(ctx context.Context, id string) (*TraceResult, er
 	}
 	return &result, nil
 }
+
+// DeleteTrace removes the processing trace for a file id.
+//
+// See https://scanii.github.io/openapi/v22/ — DELETE /files/{id}/trace.
+func (c *Client) DeleteTrace(ctx context.Context, id string) error {
+	req, err := c.newRequest(ctx, http.MethodDelete, c.target.resolve("/files/"+id+"/trace"), nil)
+	if err != nil {
+		return err
+	}
+	_, err = c.do(req, nil, http.StatusNoContent)
+	return err
+}
