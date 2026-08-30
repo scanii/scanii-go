@@ -59,7 +59,9 @@ Every client method takes a `context.Context` as its first argument so that call
 | `ProcessFromUrl(ctx, location, metadata, callback)` | `POST /files` | `*ProcessingResult` (v2.2 preview) |
 | `Fetch(ctx, location, metadata, callback)` | `POST /files/fetch` | `*PendingResult` |
 | `Retrieve(ctx, id)` | `GET /files/{id}` | `*ProcessingResult` |
+| `Delete(ctx, id)` | `DELETE /files/{id}` | `error` (204 on success; result only) |
 | `RetrieveTrace(ctx, id)` | `GET /files/{id}/trace` | `*TraceResult` or `nil` (v2.2 preview) |
+| `DeleteTrace(ctx, id)` | `DELETE /files/{id}/trace` | `error` (204 on success) |
 | `Ping(ctx)` | `GET /ping` | `bool` |
 | `CreateAuthToken(ctx, timeout)` | `POST /auth/tokens` | `*AuthToken` |
 | `RetrieveAuthToken(ctx, id)` | `GET /auth/tokens/{id}` | `*AuthToken` |

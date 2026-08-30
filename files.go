@@ -110,6 +110,19 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*ProcessingResult, er
 	return &result, nil
 }
 
+// Delete removes the processing result for a file id. The trace remains
+// available and can be removed separately with DeleteTrace.
+//
+// See https://scanii.github.io/openapi/v22/ — DELETE /files/{id}.
+func (c *Client) Delete(ctx context.Context, id string) error {
+	req, err := c.newRequest(ctx, http.MethodDelete, c.target.resolve("/files/"+id), nil)
+	if err != nil {
+		return err
+	}
+	_, err = c.do(req, nil, http.StatusNoContent)
+	return err
+}
+
 // ProcessFromUrl submits a remote URL for synchronous scanning.
 //
 // location must be a string URL. The URL is sent as a multipart/form-data
