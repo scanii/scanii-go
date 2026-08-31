@@ -130,8 +130,7 @@ func (c *Client) Delete(ctx context.Context, id string) error {
 // This is distinct from Fetch, which submits to POST /files/fetch for
 // asynchronous server-side fetching.
 //
-// This is a v2.2 preview surface; the API shape may shift before it is marked
-// stable. See https://scanii.github.io/openapi/v22/ — POST /files.
+// See https://scanii.github.io/openapi/v22/ — POST /files.
 func (c *Client) ProcessFromUrl(ctx context.Context, location string, metadata map[string]string, callback string) (*ProcessingResult, error) {
 	body, contentType, err := buildUrlMultipart(location, metadata, callback)
 	if err != nil {

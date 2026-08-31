@@ -56,11 +56,11 @@ Every client method takes a `context.Context` as its first argument so that call
 |---|---|---|
 | `Process(ctx, path, metadata, callback)` | `POST /files` | `*ProcessingResult` |
 | `ProcessAsync(ctx, path, metadata, callback)` | `POST /files/async` | `*PendingResult` |
-| `ProcessFromUrl(ctx, location, metadata, callback)` | `POST /files` | `*ProcessingResult` (v2.2 preview) |
+| `ProcessFromUrl(ctx, location, metadata, callback)` | `POST /files` | `*ProcessingResult` |
 | `Fetch(ctx, location, metadata, callback)` | `POST /files/fetch` | `*PendingResult` |
 | `Retrieve(ctx, id)` | `GET /files/{id}` | `*ProcessingResult` |
 | `Delete(ctx, id)` | `DELETE /files/{id}` | `error` (204 on success; result only) |
-| `RetrieveTrace(ctx, id)` | `GET /files/{id}/trace` | `*TraceResult` or `nil` (v2.2 preview) |
+| `RetrieveTrace(ctx, id)` | `GET /files/{id}/trace` | `*TraceResult` or `nil` |
 | `DeleteTrace(ctx, id)` | `DELETE /files/{id}/trace` | `error` (204 on success) |
 | `Ping(ctx)` | `GET /ping` | `bool` |
 | `CreateAuthToken(ctx, timeout)` | `POST /auth/tokens` | `*AuthToken` |
