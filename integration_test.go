@@ -236,7 +236,7 @@ func TestProcessWithFindings(t *testing.T) {
 }
 
 // TestRetrieveTraceKnownID verifies that a scan id has a non-empty events
-// list in its processing trace (v2.2 preview surface).
+// list in its processing trace.
 func TestRetrieveTraceKnownID(t *testing.T) {
 	c := newTestClient(t)
 	path := writeTempFile(t, localMalwareUUID)
@@ -259,7 +259,7 @@ func TestRetrieveTraceKnownID(t *testing.T) {
 }
 
 // TestRetrieveTraceUnknownID verifies that RetrieveTrace returns (nil, nil) on
-// 404 (v2.2 preview surface).
+// 404.
 func TestRetrieveTraceUnknownID(t *testing.T) {
 	c := newTestClient(t)
 
@@ -328,7 +328,7 @@ func TestDeleteTraceUnknownID(t *testing.T) {
 }
 
 // TestProcessFromUrl verifies that a URL submission returns a non-nil result
-// and hard-asserts the EICAR finding served by scanii-cli (v2.2 preview surface).
+// and hard-asserts the EICAR finding served by scanii-cli.
 func TestProcessFromUrl(t *testing.T) {
 	c := newTestClient(t)
 	url := scaniiCLITarget + "/static/eicar.txt"

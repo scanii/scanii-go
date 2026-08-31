@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Dropped the "v2.2 preview" designation from `RetrieveTrace`, `ProcessFromUrl` and
+  `TraceResult`. The trace endpoint is no longer marked preview in the contract, and
+  `ProcessFromUrl` was never preview; the methods themselves are unchanged.
+
 ## [v2.3.0] - Added delete methods for some resources 
 
 ### Added
