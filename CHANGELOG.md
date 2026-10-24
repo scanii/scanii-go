@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- `Client.ProcessReader(ctx, reader, filename, metadata, callback)` and
+  `Client.ProcessAsyncReader(ctx, reader, filename, metadata, callback)` scan content from any
+  `io.Reader`, so in-memory content or another stream no longer needs a temp file. The multipart
+  body is streamed through an `io.Pipe` as it is read rather than buffered and is sent without a
+  `Content-Length` (chunked transfer encoding on HTTP/1.1, a streamed body on HTTP/2). Because the
+  body cannot be replayed, redirects that would resend it (307, 308) are not followed and net/http
+  does not transparently retry the request on a stale or closing pooled connection. Reader errors
+  abort the upload and are returned wrapped for `errors.Is`. `Process` and `ProcessAsync` are unchanged
+  and still buffer the file and send a `Content-Length`.
+
 ### Changed
 
 - Dropped the "v2.2 preview" designation from `RetrieveTrace`, `ProcessFromUrl` and
