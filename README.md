@@ -14,7 +14,7 @@ Official Go SDK for the [Scanii](https://www.scanii.com) content processing API.
 go get github.com/scanii/scanii-go/v2
 ```
 
-Requires Go 1.25 or newer.
+Requires Go 1.26 or newer.
 
 ## Quickstart
 
