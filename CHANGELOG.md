@@ -16,9 +16,9 @@
 
 ### Changed
 
-- CI now tests Go 1.26 and 1.27, the two supported Go releases. Go 1.25 is out of support, so
-  the `go.mod` directive moves to `go 1.26` (it tracks the oldest CI leg) and the README's
-  minimum follows.
+- CI now tests Go 1.26 and 1.27, the two supported Go releases. The `go.mod` directive stays at
+  `go 1.25`, so toolchains pinned to 1.25 (`GOTOOLCHAIN=local`) still build the module, even
+  though Go 1.25 is out of support and no longer tested here.
 - Dropped the "v2.2 preview" designation from `RetrieveTrace`, `ProcessFromUrl` and
   `TraceResult`. The trace endpoint is no longer marked preview in the contract, and
   `ProcessFromUrl` was never preview; the methods themselves are unchanged.
