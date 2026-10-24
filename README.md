@@ -50,12 +50,44 @@ func main() {
 
 Every client method takes a `context.Context` as its first argument so that callers can cancel in-flight requests or attach deadlines.
 
+### Scanning content that is not a file
+
+`ProcessReader` and `ProcessAsyncReader` take any `io.Reader` plus the file name to report, so content
+that is already in memory or arriving from another stream can be scanned without a temp file:
+
+```go
+resp, err := http.Get("https://example.com/upload.pdf")
+if err != nil {
+    log.Fatal(err)
+}
+defer resp.Body.Close()
+
+result, err := client.ProcessReader(ctx, resp.Body, "upload.pdf", map[string]string{"source": "web"}, "")
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("findings: %v\n", result.Findings)
+```
+
+The reader methods stream the body as it is read instead of buffering the whole file, so memory use
+stays flat for large uploads. Because the length is not known up front the request carries no
+`Content-Length` header: it uses chunked transfer encoding on HTTP/1.1 and a streamed body on
+HTTP/2 (which the default client negotiates with the Scanii API, and which has no
+`Transfer-Encoding` header). Since the body cannot be replayed, redirects that would resend it (307,
+308) are not followed, and net/http will not transparently retry the request when a pooled
+connection turns out to be stale or is closing, as it does for `Process`. Callers that need that
+resilience should retry with a fresh reader, or use `Process` for content that can be buffered. An
+error from the reader aborts the upload and is returned wrapped, so `errors.Is` matches it. The SDK never closes the reader. `Process` and `ProcessAsync` keep
+buffering the file and sending a `Content-Length`.
+
 ## API
 
 | Method | REST | Returns |
 |---|---|---|
 | `Process(ctx, path, metadata, callback)` | `POST /files` | `*ProcessingResult` |
 | `ProcessAsync(ctx, path, metadata, callback)` | `POST /files/async` | `*PendingResult` |
+| `ProcessReader(ctx, reader, filename, metadata, callback)` | `POST /files` | `*ProcessingResult` |
+| `ProcessAsyncReader(ctx, reader, filename, metadata, callback)` | `POST /files/async` | `*PendingResult` |
 | `ProcessFromUrl(ctx, location, metadata, callback)` | `POST /files` | `*ProcessingResult` |
 | `Fetch(ctx, location, metadata, callback)` | `POST /files/fetch` | `*PendingResult` |
 | `Retrieve(ctx, id)` | `GET /files/{id}` | `*ProcessingResult` |
