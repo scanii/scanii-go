@@ -14,7 +14,7 @@ Official Go SDK for the [Scanii](https://www.scanii.com) content processing API.
 go get github.com/scanii/scanii-go/v2
 ```
 
-Requires Go 1.25 or newer.
+Requires Go 1.26 or newer, the oldest Go release the Go team still supports.
 
 ## Quickstart
 
@@ -134,7 +134,7 @@ Pull requests must pass three checks, the same targets: `lint` (`make lint`), `t
 and `test/e2e` (`make test/e2e`), with `test` and `test/e2e` on Linux, macOS and Windows with Go 1.26
 and 1.27. `make audit` runs lint and test/ci together, and `make help` lists the targets. The analysis
 tools are pinned in `tools/go.mod` (a module of its own) and run with `go tool`, so nothing needs
-installing. `make lint` needs Go 1.27.3 or newer for the tools; the SDK itself still supports Go 1.25 and
+installing. `make lint` needs Go 1.27.3 or newer for the tools; the SDK itself supports Go 1.26 and
 newer.
 
 ## Migration from `github.com/uvasoftware/scanii-go`
