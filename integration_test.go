@@ -1,3 +1,5 @@
+//go:build integration
+
 package scanii_test
 
 import (
@@ -14,16 +16,15 @@ import (
 	"github.com/scanii/scanii-go/v2"
 )
 
-// scanii-cli local test endpoint and credentials. The CI workflow boots
-// scanii-cli on this address before running these tests; locally, run
+// scanii-cli local test endpoint (credentials are testKey and testSecret in
+// client_test.go). These tests need a scanii-cli server on this address, so
+// they are behind the integration build tag and plain go test skips them.
+// CI's test/e2e check boots one with scanii/setup-cli-action; locally, run
 //
 //	docker run -d --name scanii-cli -p 4000:4000 ghcr.io/scanii/scanii-cli:latest server
-//
-// or use scanii/setup-cli-action@v1 in CI.
+//	make test/e2e
 const (
 	scaniiCLITarget = "http://localhost:4000"
-	testKey         = "key"
-	testSecret      = "secret"
 
 	// localMalwareUUID is the literal content of the local malware fixture file
 	// recognized by scanii-cli's signature DB. Using this UUID instead of EICAR
@@ -97,65 +98,6 @@ func TestPingWithBadCredentials(t *testing.T) {
 	}
 	if ok {
 		t.Fatal("Ping returned true with bad credentials")
-	}
-}
-
-func TestNewClientRejectsEmptyKey(t *testing.T) {
-	if _, err := scanii.NewClient(scanii.ClientOpts{Key: ""}); err == nil {
-		t.Fatal("expected error for empty key")
-	}
-}
-
-func TestNewClientRejectsKeyWithColon(t *testing.T) {
-	if _, err := scanii.NewClient(scanii.ClientOpts{Key: "a:b", Secret: "x"}); err == nil {
-		t.Fatal("expected error for key containing colon")
-	}
-}
-
-// countingTransport records how many requests it carries before delegating to
-// the default transport.
-type countingTransport struct {
-	mu    sync.Mutex
-	count int
-}
-
-func (t *countingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	t.mu.Lock()
-	t.count++
-	t.mu.Unlock()
-	return http.DefaultTransport.RoundTrip(req)
-}
-
-// TestNewClientUsesSuppliedHTTPClient guards the constructor against regressing
-// to the v1.x behavior, where a caller-supplied *http.Client was assigned only
-// inside the nil branch, leaving the field nil so the first request panicked.
-// The v2.0.0 rewrite fixed it; this test keeps it fixed. See
-// https://github.com/scanii/scanii-go/issues/15.
-func TestNewClientUsesSuppliedHTTPClient(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	}))
-	defer srv.Close()
-
-	tr := &countingTransport{}
-	c, err := scanii.NewClient(scanii.ClientOpts{
-		Target:     scanii.NewTarget(srv.URL),
-		Key:        testKey,
-		Secret:     testSecret,
-		HTTPClient: &http.Client{Transport: tr},
-	})
-	if err != nil {
-		t.Fatalf("NewClient: %v", err)
-	}
-
-	if _, err := c.Ping(context.Background()); err != nil {
-		t.Fatalf("Ping: %v", err)
-	}
-
-	tr.mu.Lock()
-	defer tr.mu.Unlock()
-	if tr.count == 0 {
-		t.Fatal("supplied HTTPClient was discarded; request did not use its transport")
 	}
 }
 
