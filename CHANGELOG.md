@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [v2.5.0] - Requires Go 1.26
 
 ### Changed
 
