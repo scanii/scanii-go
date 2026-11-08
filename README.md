@@ -118,14 +118,24 @@ For a custom or local endpoint, use `scanii.NewTarget("http://localhost:4000")`.
 
 ## Local development with scanii-cli
 
-Run the integration tests against a local mock server — no real credentials needed:
+The unit tests need nothing but Go. The integration tests (`integration_test.go`, behind the
+`integration` build tag) run against a local scanii-cli mock server, so no real credentials are needed:
 
 ```bash
+make test/ci     # module hygiene and the unit race suite, no server
 docker run -d --name scanii-cli -p 4000:4000 ghcr.io/scanii/scanii-cli:latest server
-go test -race ./...
+make test/e2e    # go test -race -tags=integration ./... against the server
+make lint        # gofmt, go vet, staticcheck, govulncheck, gosec and the license allowlist
 ```
 
 Test credentials: key `key`, secret `secret`, endpoint `http://localhost:4000`.
+
+Pull requests must pass three checks, the same targets: `lint` (`make lint`), `test` (`make test/ci`)
+and `test/e2e` (`make test/e2e`), with `test` and `test/e2e` on Linux, macOS and Windows with Go 1.26
+and 1.27. `make audit` runs lint and test/ci together, and `make help` lists the targets. The analysis
+tools are pinned in `tools/go.mod` (a module of its own) and run with `go tool`, so nothing needs
+installing. `make lint` needs Go 1.27.3 or newer for the tools; the SDK itself still supports Go 1.25 and
+newer.
 
 ## Migration from `github.com/uvasoftware/scanii-go`
 
