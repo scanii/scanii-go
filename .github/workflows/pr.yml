@@ -43,6 +43,11 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         go: ['1.26', '1.27']
     steps:
+      # Windows runners check out with core.autocrlf=true, so go mod tidy -diff would report
+      # every line of go.sum as changed.
+      - name: Keep LF line endings
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -82,6 +87,11 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         go: ['1.26', '1.27']
     steps:
+      # Windows runners check out with core.autocrlf=true, so go mod tidy -diff would report
+      # every line of go.sum as changed.
+      - name: Keep LF line endings
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
