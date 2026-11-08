@@ -303,7 +303,7 @@ func buildUrlMultipart(location string, metadata map[string]string, callback str
 }
 
 func buildFileMultipart(path string, metadata map[string]string, callback string) (io.Reader, string, error) {
-	file, err := os.Open(path)
+	file, err := os.Open(path) // #nosec G304 -- path is the file the caller asked Process to upload; opening it is the API
 	if err != nil {
 		return nil, "", err
 	}
