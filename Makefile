@@ -55,7 +55,12 @@ audit: lint test/ci
 test/ci:
 	go mod tidy -diff
 	go mod verify
+	$(TOOLS_TIDY)
 	go test -race -vet=off ./...
+
+# tools/go.mod is go 1.27.3. CI's setup-go exports GOTOOLCHAIN=local, under which the Go 1.26 legs
+# would refuse the tools module, so this one check lets go fetch the toolchain tools/go.mod names.
+TOOLS_TIDY = GOTOOLCHAIN=auto go -C tools mod tidy -diff
 
 ## test/e2e: the integration tests against a scanii-cli server on port 4000, what CI's test/e2e check runs
 .PHONY: test/e2e

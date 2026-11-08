@@ -14,7 +14,8 @@ permissions:
 # 3-OS x Go 1.26/1.27 matrix; a matrix leg reports "name (leg)", so each matrix has a fan-in job
 # with the required name that fails unless every leg succeeded (a skipped or cancelled leg fails it
 # too). The Windows legs run the Makefile target's go commands directly rather than depend on make
-# there: keep them in step with the Makefile.
+# there: keep them in step with the Makefile. No job needs git auth after checkout, and lint runs
+# third-party tool code, so no checkout keeps the job token in .git/config.
 jobs:
   # gofmt, go vet, staticcheck, govulncheck, gosec and the go-licenses allowlist, with the tools
   # pinned in tools/go.mod (go 1.27.3, which is why this job runs on that Go and not the matrix).
@@ -23,6 +24,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: tools/go.mod
@@ -41,6 +44,8 @@ jobs:
         go: ['1.26', '1.27']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: ${{ matrix.go }}
@@ -54,6 +59,7 @@ jobs:
         run: |
           go mod tidy -diff
           go mod verify
+          GOTOOLCHAIN=auto go -C tools mod tidy -diff
           go test -race -vet=off ./...
 
   test:
@@ -76,6 +82,8 @@ jobs:
         go: ['1.26', '1.27']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: ${{ matrix.go }}
