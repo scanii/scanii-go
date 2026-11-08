@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The module now requires Go 1.26 (`go 1.26` in `go.mod`), the oldest Go release the Go team
+  still supports and the oldest one CI tests. Go 1.25 left support when 1.27 shipped. A project
+  still on Go 1.25 keeps building with v2.4.0 and earlier. With the default `GOTOOLCHAIN=auto`,
+  upgrading the SDK makes the go command fetch Go 1.26 and raise that project's own `go` line.
+
 ## [v2.4.0] - Added reader-based uploads
 
 ### Added
