@@ -49,7 +49,8 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: ${{ matrix.go }}
-          cache: true
+          # the SDK has no go.sum; the tools module (tidy-checked here) is what there is to cache
+          cache-dependency-path: tools/go.sum
       - name: make test/ci
         if: runner.os != 'Windows'
         run: make test/ci
@@ -87,7 +88,7 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: ${{ matrix.go }}
-          cache: true
+          cache: false # nothing to cache: the SDK has no dependencies
       - name: Setup scanii-cli
         uses: scanii/setup-cli-action@cac27c2ec1ff8056480b54a7d3207cf023783e20 # v1.0.3
       - name: make test/e2e
