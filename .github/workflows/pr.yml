@@ -28,7 +28,8 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: tools/go.mod
+          go-version: "1.27.x" # newest 1.27 patch, so a Go security release needs no go.mod edit (grumpy#78)
+          check-latest: true
           cache-dependency-path: tools/go.sum
       - run: make lint
 
