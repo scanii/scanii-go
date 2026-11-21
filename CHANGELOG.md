@@ -1,6 +1,8 @@
 # Changelog
 
-## [v2.5.0] - Requires Go 1.26
+## [Unreleased]
+
+## [2.5.0] — Requires Go 1.26
 
 ### Changed
 
@@ -10,7 +12,7 @@
   `GOTOOLCHAIN=auto`, a project whose installed Go is older than 1.26 also gets Go 1.26 fetched
   automatically. A project that must stay on Go 1.25 can keep using v2.4.0.
 
-## [v2.4.0] - Added reader-based uploads
+## [2.4.0] — Added reader-based uploads
 
 ### Added
 
@@ -33,7 +35,7 @@
   `TraceResult`. The trace endpoint is no longer marked preview in the contract, and
   `ProcessFromUrl` was never preview; the methods themselves are unchanged.
 
-## [v2.3.0] - Added delete methods for some resources 
+## [2.3.0] — Added delete methods for some resources
 
 ### Added
 
@@ -41,7 +43,7 @@
 - `Client.DeleteTrace(ctx, id)` deletes a processing trace independently.
 - Both delete methods return `*scanii.Error` with status 404 for unknown IDs.
 
-## [v2.2.2] — fix module path for v2
+## [2.2.2] — fix module path for v2
 
 ### Fixed
 
@@ -57,12 +59,12 @@
   info was updated to match. Left stale, it would have reported `(devel)` in the
   `User-Agent` header for every consumer.
 
-## [v2.2.1] — dependency refresh
+## [2.2.1] — dependency refresh
 
 - Bumped CI actions: `actions/checkout` v4 → v7, `actions/setup-go` v5 → v7.
 - Relaxed `go.mod` directive to `go 1.25` so the previous-stable CI leg builds. No runtime dependencies — the module itself is unchanged.
 
-## [v2.2.0] — deprecate AUTO endpoint
+## [2.2.0] — deprecate AUTO endpoint
 
 ### Deprecated
 
@@ -70,7 +72,7 @@
   `TargetUS1`, `TargetEU1`, `TargetEU2`, `TargetAP1`, `TargetAP2`, or `TargetCA1` for
   explicit data residency control. Will be removed in a future major version.
 
-## [v2.1.0] — v2.2 surface
+## [2.1.0] — v2.2 surface
 
 ### New API
 
@@ -93,7 +95,7 @@
   returned as `*scanii.Error` by every client method. The field is retained for
   backwards compatibility. Will be removed in a future major version.
 
-## v2.0.0
+## [2.0.0]
 
 Rebrand and modernization release.
 
